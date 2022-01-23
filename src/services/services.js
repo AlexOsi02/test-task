@@ -1,31 +1,3 @@
-// export const regions = [
-//     {CentralFederalDistrict: {"AF": "Afghanistan",
-//             "AL": "Albania",
-//             "DZ": "Algeria",}},
-//     {NorthWesternFederalDistrict: {"AF": "Afghanistan",
-//             "AL": "Albania",
-//             "DZ": "Algeria",}},
-//     {SouthernFederalDistrict: { "AS": "American Samoa",
-//             "AD": "Andorra",
-//             "AO": "Angola",}},
-//     {NorthCaucasianFederalDistrict: {}},
-//     {VolgaFederalDistrict: {}},
-//     {UralFederalDistrict: {}},
-//     {SiberianFederalDistrict: {}},
-//     {FarEasternFederalDistrict: {}}
-// ]
-//
-// export const districts = {
-//     "Центральный федеральный округ": "CentralFederalDistrict",
-//     "NorthWesternFederalDistrict": "Северо-Западный федеральный округ",
-//     "SouthernFederalDistrict": "Южный федеральный округ",
-//     "NorthCaucasianFederalDistrict": "Северо-Кавказский Федеральный округ",
-//     "VolgaFederalDistrict": "Приволжский федеральный округ",
-//     "UralFederalDistrict": "Уральский федеральный округ",
-//     "SiberianFederalDistrict": "Сибирский федеральный округ",
-//     "FarEasternFederalDistrict": "Дальневосточный федеральный округ",
-// }
-
 export const data = {
     districts: [
         {
@@ -149,4 +121,15 @@ export const data = {
                 ]
         }
     ]
+}
+
+export const postData = async (data) => {
+    await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify({data}),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
+        .then((response) => console.log(response))
 }

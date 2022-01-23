@@ -2,7 +2,7 @@ import React from 'react';
 import {useField, useFormikContext} from 'formik';
 import Form from "react-bootstrap/Form";
 
-const SelectWrapper = ({name, options, ...otherProps}) => {
+const SelectorWrapper = ({name, options, ...otherProps}) => {
     const {setFieldValue} = useFormikContext();
     const [field] = useField(name);
 
@@ -14,21 +14,27 @@ const SelectWrapper = ({name, options, ...otherProps}) => {
     const configSelect = {
         ...field,
         ...otherProps,
-        onChange: handleChange
+        onChange: handleChange,
     };
 
     return (
-        <Form.Select {...configSelect}>
-            <option>Выбрать...</option>
-            {Object.values(options).map((item, pos) => {
-                return (
-                    <option key={pos} value={item}>
-                        {item}
-                    </option>
-                )
-            })}
-        </Form.Select>
+        <>
+            <Form.Label>{configSelect.title}</Form.Label>
+            <Form.Select {...configSelect}>
+                <option>Выбрать...</option>
+                {Object.values(options).map((item, pos) => {
+                    return (
+                        <option key={pos} value={item}>
+                            {item}
+                        </option>
+                    )
+                })}
+            </Form.Select>
+            <Form.Control.Feedback type="invalid">
+                {configSelect.error}
+            </Form.Control.Feedback>
+        </>
     );
 };
 
-export default SelectWrapper;
+export default SelectorWrapper;

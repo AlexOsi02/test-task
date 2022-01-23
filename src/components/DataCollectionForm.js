@@ -1,36 +1,11 @@
 import {useState} from "react";
-import SelectWrapper from "./SelectorWrapper";
+import SelectorWrapper from "./SelectorWrapper";
+import InputWrapper from "./InputWrapper";
 import {Formik} from "formik";
-import * as Yup from 'yup';
 import Form from 'react-bootstrap/Form';
 import {Button, Col, Row} from "react-bootstrap";
-import {data} from "../services/services";
-import InputWrapper from "./InputWrapper";
-
-const ValidationSchema = Yup.object().shape({
-    lastName: Yup.string()
-        .max(35, 'Фамилия слишком длинная')
-        .matches(/^[a-zA-Zа-яА-Я]+/, 'Некорректное значение')
-        .required('Поле обязательно к заполнению'),
-    firstName: Yup.string()
-        .max(35, 'Имя слишком длинное')
-        .matches(/^[a-zA-Zа-яА-Я]+/, 'Некорректное значение')
-        .required('Поле обязательно к заполнению'),
-    secondName: Yup.string()
-        .max(35, 'Отчество слишком длинное')
-        .matches(/^[a-zA-Zа-яА-Я]+/, 'Некорректное значение')
-        .required('Поле обязательно к заполнению'),
-    email: Yup.string().email('Некорректное значение').required('Поле обязательно к заполнению'),
-    phoneNumber: Yup.string()
-        .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Некорректное значение')
-        .min(11, 'Некорректное значение')
-        .max(11, 'Некорректное значение')
-        .required('Поле обязательно к заполнению'),
-    district: Yup.string()
-        .min(12, 'Выберите округ'),
-    region: Yup.string()
-        .min(12, 'Выберите регион'),
-});
+import {data, postData} from "../services/services";
+import {ValidationSchema} from "../validation/ValidationSchema";
 
 const DataCollectionForm = () => {
         const [selectedDistrict, setSelectedDistrict] = useState();
@@ -48,7 +23,11 @@ const DataCollectionForm = () => {
                         region: 'Выбрать...'
                     }}
                     validationSchema={ValidationSchema}
-                    onSubmit={values => console.log(values)}
+                    onSubmit={(values, {setSubmitting}) => {
+                        postData(JSON.stringify(values));
+                        alert(JSON.stringify(values, null, 2));
+                        setSubmitting(false);
+                    }}
                 >
                     {({
                           values,
@@ -108,35 +87,25 @@ const DataCollectionForm = () => {
                                 <Form.Group as={Col}
                                             controlId="formGridDistrict"
                                             onChange={(e) => setSelectedDistrict(e.target.value)}>
-                                    <Form.Label>Округ</Form.Label>
-                                    <SelectWrapper
+                                    <SelectorWrapper
                                         name="district"
-                                        placeholder="Выбрать..."
+                                        title={"Округ"}
                                         error={errors.district}
                                         isInvalid={!!errors.district}
                                         options={data.districts.map(item => item.name)}/>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.district}
-                                    </Form.Control.Feedback>
                                 </Form.Group>
 
-                                {/*todo:создатькомпонентусInputom*/}
-
                                 <Form.Group as={Col} controlId="formGridRegion">
-                                    <Form.Label>Регион</Form.Label>
-                                    <SelectWrapper
+                                    <SelectorWrapper
                                         name="region"
-                                        placeholder="Выбрать..."
+                                        title={"Регион"}
                                         error={errors.region}
                                         disabled={!availableRegions?.regions}
                                         isInvalid={!!errors.region}
                                         options={availableRegions?.regions ? availableRegions?.regions : data.districts[0].regions}/>
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.region}
-                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
-                            <Button variant="primary" type="submit">
+                            <Button variant="primary" type="submit" disabled={isSubmitting}>
                                 Отправить форму
                             </Button>
                         </Form>
